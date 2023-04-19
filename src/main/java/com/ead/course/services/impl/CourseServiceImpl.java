@@ -40,4 +40,9 @@ public class CourseServiceImpl implements CourseService {
         }
         courseRepository.delete(courseModel);
     }
+
+    @Override
+    public CourseModel save(CourseModel courseModel) {
+        return courseRepository.save(courseModel);
+    }
 }
