@@ -52,4 +52,9 @@ public class CourseServiceImpl implements CourseService {
     public Optional<CourseModel> findById(UUID courseId) {
         return courseRepository.findById(courseId);
     }
+
+    @Override
+    public List<CourseModel> findAll() {
+        return courseRepository.findAll();
+    }
 }

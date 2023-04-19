@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,4 +55,8 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.save(courseModel));
     }
 
+    @GetMapping
+    public ResponseEntity<List<CourseModel>> getAllCourses(){
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.findAll());
+    }
 }
