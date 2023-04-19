@@ -26,5 +26,5 @@ public class CourseDto {
     private UUID userInstructor;
 
     @NotNull
-    private CourseLevel couseLevel;
+    private CourseLevel courseLevel;
 }
