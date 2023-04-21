@@ -1,6 +1,5 @@
 package com.ead.course.controller;
 
-import com.ead.course.dtos.CourseDto;
 import com.ead.course.dtos.ModuleDto;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
@@ -19,8 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/modules")
-@CrossOrigin(origins = "x", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ModuleController {
 
     @Autowired
@@ -41,5 +39,30 @@ public class ModuleController {
         moduleModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         moduleModel.setCourse(courseModelOptional.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(moduleService.save(moduleModel));
+    }
+
+    @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> deleteModule(@PathVariable(value="courseId") UUID courseId,
+                                               @PathVariable(value="moduleId") UUID moduleId){
+        Optional<ModuleModel> moduleModelOptional = moduleService.findModuleIntoCourse(courseId, moduleId);
+        if(!moduleModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module not found for this course.");
+        }
+        moduleService.delete(moduleModelOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
+    }
+
+    @PutMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> updateModule(@PathVariable(value="courseId") UUID courseId,
+                                               @PathVariable(value="moduleId") UUID moduleId,
+                                               @RequestBody @Valid ModuleDto moduleDto){
+        Optional<ModuleModel> moduleModelOptional = moduleService.findModuleIntoCourse(courseId, moduleId);
+        if(!moduleModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module not found for this course.");
+        }
+        var moduleModel = moduleModelOptional.get();
+        moduleModel.setTitle(moduleDto.getTitle());
+        moduleModel.setDescription(moduleDto.getDescription());
+        return ResponseEntity.status(HttpStatus.OK).body(moduleService.save(moduleModel));
     }
 }
