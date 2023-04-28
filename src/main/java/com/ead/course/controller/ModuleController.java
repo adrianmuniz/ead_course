@@ -66,4 +66,20 @@ public class ModuleController {
         moduleModel.setDescription(moduleDto.getDescription());
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.save(moduleModel));
     }
+
+    @GetMapping("/courses/{courseId}/modules")
+    public ResponseEntity<List<ModuleModel>> getAllModules(@PathVariable(value="courseId") UUID courseId){
+        return ResponseEntity.status(HttpStatus.OK).body(moduleService.findAllByCourse(courseId));
+
+    }
+
+    @GetMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> getOneModule(@PathVariable(value = "courseId") UUID courseId,
+                                               @PathVariable(value="moduleId") UUID moduleId){
+        Optional<ModuleModel> moduleModelOptional = moduleService.findModuleIntoCourse(courseId, moduleId);
+        if(!moduleModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module not found for this course.");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(moduleModelOptional.get());
+    }
 }
