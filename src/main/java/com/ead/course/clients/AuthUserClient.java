@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -33,23 +34,20 @@ public class AuthUserClient {
     String REQUEST_URI_AUTHUSER;
 
     public Page<UserDto> getAllUsersByCourse(UUID courseId, Pageable pageable){
-        List<UserDto> searchResult= null;
-        ResponseEntity<ResponsePageDto<UserDto>> result = null;
+        List<UserDto> searchResult = null;
         String url = REQUEST_URI_AUTHUSER + utilsService.createdUrlGetAllUsersByCourse(courseId, pageable);
-
-        log.debug("Request URL: {}", url);
-        log.info("Request URL: {}", url);
+        log.debug("Request URL: {} ", url);
+        log.info("Request URL: {} ", url);
         try{
             ParameterizedTypeReference<ResponsePageDto<UserDto>> responseType = new ParameterizedTypeReference<ResponsePageDto<UserDto>>() {};
-            result = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+            ResponseEntity<ResponsePageDto<UserDto>> result = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
             searchResult = result.getBody().getContent();
             log.debug("Response Number of Elements: {} ", searchResult.size());
-        } catch(HttpStatusCodeException e){
-            log.error("Error request /users {} ", e);
+        } catch (HttpStatusCodeException e){
+            log.error("Error request /courses {} ", e);
         }
-
-        log.info("Ending request /users courseId {}", courseId);
-        return result.getBody();
+        log.info("Ending request /users courseId {} ", courseId);
+        return new PageImpl<>(searchResult);
     }
 
     public ResponseEntity<UserDto> getOneUserById(UUID userId){
@@ -64,5 +62,10 @@ public class AuthUserClient {
         courseUserDto.setUserId(userId);
         courseUserDto.setCourseId(courseId);
         restTemplate.postForObject(url, courseUserDto, String.class);
+    }
+
+    public void deleteCourseInAuthUser(UUID couseId){
+        String url = REQUEST_URI_AUTHUSER + "/users/courses/" + couseId;
+        restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
     }
 }

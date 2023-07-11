@@ -34,7 +34,7 @@ public class CourseUserServiceImpl implements CourseUserService {
     @Override
     public CourseUserModel saveAndSendSubscriptionUserInCourse(CourseUserModel courseUserModel) {
         //SALVANDO DADO NA TBL
-        courseUserRepository.save(courseUserModel);
+        courseUserModel = courseUserRepository.save(courseUserModel);
 
         //ENVIANDO DADOS AUTHUSER SOBRE UPDATE
         authUserClient.postSubscriptionUserInCourse(courseUserModel.getCourse().getCourseId(), courseUserModel.getUserId());
