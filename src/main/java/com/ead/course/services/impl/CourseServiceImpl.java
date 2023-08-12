@@ -2,11 +2,11 @@ package com.ead.course.services.impl;
 
 import com.ead.course.clients.AuthUserClient;
 import com.ead.course.models.CourseModel;
-import com.ead.course.models.CourseUserModel;
+import com.ead.course.models.UserModel;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.CourseRepository;
-import com.ead.course.repositories.CourseUserRepository;
+import com.ead.course.repositories.UserRepository;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.CourseService;
@@ -34,7 +34,7 @@ public class CourseServiceImpl implements CourseService {
     private LessonRepository lessonRepository;
 
     @Autowired
-    private CourseUserRepository courseUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     AuthUserClient authUserClient;
@@ -54,9 +54,9 @@ public class CourseServiceImpl implements CourseService {
             }
             moduleRepository.deleteAll(moduleModelList);
         }
-        List<CourseUserModel> courseUserModelList = courseUserRepository.findAllCourseUserIntoCourse(courseModel.getCourseId());
-        if(!courseUserModelList.isEmpty()){
-            courseUserRepository.deleteAll(courseUserModelList);
+        List<UserModel> userModelList = userRepository.findAllCourseUserIntoCourse(courseModel.getCourseId());
+        if(!userModelList.isEmpty()){
+            userRepository.deleteAll(userModelList);
             //Existe relação com User
             deleteCourseUserInAuthUser = true;
         }
