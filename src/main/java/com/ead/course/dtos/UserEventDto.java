@@ -12,7 +12,7 @@ public class UserEventDto {
     private UUID userId;
     private String username;
     private String email;
-    private String fullNx4xxame;
+    private String fullName;
     private String userStatus;
     private String userType;
     private String phoneNumber;
