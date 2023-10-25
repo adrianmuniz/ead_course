@@ -56,13 +56,16 @@ public class CourseUserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: subscription already exists!");
         }
         Optional<UserModel> userModelOptional = userService.findById(subscriptionDto.getUserId());
+        var oqueVemNoId = userService.findById(subscriptionDto.getUserId());
+        log.warn("---- userModelOptional: " + userModelOptional);
+        log.warn("---- findById: " + oqueVemNoId);
         if(!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
         if(userModelOptional.get().getUserStatus().equals(UserStatus.BLOCKED.toString())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User is blocked.");
         }
-        courseService.saveSubscriptionUserInCourse(courseModelOptional.get().getCourseId(), userModelOptional.get().getUserId());
+        courseService.saveSubscriptionUserInCourseAndSendNotification(courseModelOptional.get(), userModelOptional.get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created successfully.");
     }
