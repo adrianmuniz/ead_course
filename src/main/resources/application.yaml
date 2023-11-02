@@ -7,11 +7,13 @@ spring:
   application:
     name: ead-course-service
   config:
-    import: 'optional:configserver:'
+    import: 'configserver:'
   cloud:
     config:
       discovery:
         service-id: ead-config-server
+      username: configserver
+      password: 'ead123'
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/ead-course-v2
 #    username: postgres
